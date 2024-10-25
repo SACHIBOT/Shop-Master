@@ -111,9 +111,10 @@ function Items() {
             }
             loadItems()
             clearNewItemInfo()
+            setError("")
         } catch (error) {
             if (error instanceof AxiosError) {
-                setError(error.response?.data?.message || 'Error adding item. Try again later.');
+                setError(error.response?.data || 'Error adding item. Try again later.');
             } else {
                 setError((error as Error).message);
             }
@@ -126,9 +127,10 @@ function Items() {
 
             await axios.delete(`http://localhost:8080/manager/items/${id}`, config);
             loadItems()
+            setItemActionError("")
         } catch (error) {
             if (error instanceof AxiosError) {
-                setItemActionError(error.response?.data?.message || 'Error deleting item. Try again later.');
+                setItemActionError(error.response?.data || 'Error deleting item. Try again later.');
             } else {
                 setItemActionError((error as Error).message);
             }
@@ -154,9 +156,10 @@ function Items() {
             }
             loadItems()
             clearItemUpdateInfo()
+            setUpdateError("")
         } catch (error) {
             if (error instanceof AxiosError) {
-                setUpdateError(error.response?.data?.message || 'Error updating item. Try again later.');
+                setUpdateError(error.response?.data || 'Error updating item. Try again later.');
             } else {
                 setUpdateError((error as Error).message);
             }
@@ -342,7 +345,6 @@ function Items() {
                                                 <button type="button" className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
                                                     onClick={() => deleteItem(item.itemId)}
                                                 >Delete</button>
-                                                {itemActionError && <p className="text-center text-red-500 mt-3 text-sm b-4">{itemActionError}</p>}
 
                                             </td>}
                                         </tr>
@@ -350,7 +352,10 @@ function Items() {
                                     }
 
                                 </tbody>
-                            </table> </div>
+                            </table>
+                            {itemActionError && <p className="text-center text-red-500 mt-3 text-sm p-4 ">{itemActionError}</p>}
+
+                        </div>
 
                     </div>
 

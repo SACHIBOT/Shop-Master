@@ -7,6 +7,7 @@ import Login from "./pages/Login"
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from "./context/AuthContext"
 import Items from "./pages/Items"
+import Users from "./pages/Users"
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/items" element={<Items />} />
             <Route path="/categories" element={<Categories />} />
+            <Route path="/users" element={<Users />} />
           </Route>
           <Route path="/login" element={<Login />}></Route>
         </Routes>

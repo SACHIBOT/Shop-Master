@@ -59,9 +59,10 @@ function Categories() {
             loadCategories()
             setCategoryName("")
             setCategoryDescription("")
+            setError("")
         } catch (error) {
             if (error instanceof AxiosError) {
-                setError(error.response?.data?.message || 'Error adding category. Try again later.');
+                setError(error.response?.data || 'Error adding category. Try again later.');
             } else {
                 setError((error as Error).message);
             }
@@ -78,9 +79,10 @@ function Categories() {
             setCategoryNameToUpdate("")
             setCategoryDescriptionToUpdate("")
             setCategoryToUpdate(undefined)
+            setUpdateError("")
         } catch (error) {
             if (error instanceof AxiosError) {
-                setUpdateError(error.response?.data?.message || 'Error updating category. Try again later.');
+                setUpdateError(error.response?.data || 'Error updating category. Try again later.');
             } else {
                 setUpdateError((error as Error).message);
             }
@@ -92,9 +94,10 @@ function Categories() {
 
             await axios.delete(`http://localhost:8080/manager/categories/${id}`, config);
             loadCategories()
+            setError("")
         } catch (error) {
             if (error instanceof AxiosError) {
-                setError(error.response?.data?.message || 'Error deleting category. Try again later.');
+                setError(error.response?.data || 'Error deleting category. Try again later.');
             } else {
                 setError((error as Error).message);
             }
