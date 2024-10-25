@@ -1,5 +1,5 @@
 {
-  "name": "pos-frontend",
+  "name": "shop-master",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "autoprefixer": "^10.4.20",
-    "pos-frontend": "file:",
+    "shop-master": "file:",
     "postcss": "^8.4.47",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
