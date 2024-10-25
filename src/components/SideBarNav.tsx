@@ -55,7 +55,7 @@ const navigation = [
 export default function Nav() {
     const [isOpen, setIsOpen] = useState(false);
 
-    const { isAuthenticated, jwtToken, isAdmin, isManager, logout } = useAuth();
+    const { isAdmin, isManager, logout } = useAuth();
     const handleToggle = () => {
         setIsOpen(!isOpen);
     };

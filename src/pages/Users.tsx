@@ -1,5 +1,5 @@
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import '../App.css'
 import Nav from '../components/SideBarNav';
 import { useNavigate } from 'react-router-dom';
@@ -23,7 +23,7 @@ function Users() {
     const [updatedRole, setUpdatedRole] = useState<number>(0)
 
     const navigate = useNavigate();
-    const { isAuthenticated, jwtToken, isAdmin, isManager } = useAuth();
+    const { isAuthenticated, jwtToken, isAdmin } = useAuth();
     if (!isAuthenticated) {
         navigate("/")
     }
@@ -63,16 +63,26 @@ function Users() {
     const getRoles = async () => {
         try {
             const response = await axios.get('http://localhost:8080/roles', config);
+
             setRoles(response.data);
+
         } catch (err) {
         }
     };
 
-    const updateRole = async (userId: string, roleId: string) => {
+    const updateRole = async (userId: number, roleId: number) => {
         try {
-            const response = await axios.get(`http://localhost:8080/admin/users/${userId}/role/${roleId}`, config);
-            setRoles(response.data);
-        } catch (err) {
+            if (userId !== 0 && roleId !== 0) {
+                await axios.put(`http://localhost:8080/admin/users/${userId}/role/${roleId}`, config);
+                setUpdatedRole(0)
+                getUsers()
+            }
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                setActionError(error.response?.data || 'Error updating user. Try again later.');
+            } else {
+                setActionError((error as Error).message);
+            }
         }
     };
 
@@ -204,7 +214,7 @@ function Users() {
                                                                     ))}
                                                                 </select>
                                                                 <button
-                                                                    // onClick={}
+                                                                    onClick={() => updateRole(user.userId, updatedRole)}
                                                                     className="bg-yellow-500 text-white px-4 py-2 rounded-lg  hover:bg-yellow-600 "
                                                                 >
                                                                     Promote
