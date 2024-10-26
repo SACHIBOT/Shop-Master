@@ -7,6 +7,7 @@ interface AuthContxtType {
     isAdmin: boolean;
     isManager: boolean;
     isCashier: boolean;
+    username: string;
 }
 
 export default AuthContxtType;

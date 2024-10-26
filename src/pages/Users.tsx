@@ -73,7 +73,7 @@ function Users() {
     const updateRole = async (userId: number, roleId: number) => {
         try {
             if (userId !== 0 && roleId !== 0) {
-                await axios.put(`http://localhost:8080/admin/users/${userId}/role/${roleId}`, config);
+                await axios.put(`http://localhost:8080/admin/users/${userId}/role/${roleId}`, {}, config);
                 setUpdatedRole(0)
                 getUsers()
             }
@@ -156,6 +156,7 @@ function Users() {
                                     <input type="text" className="block w-full p-2 border bg-slate-200 dark:border-slate-600  dark:bg-slate-700 border-slate-300 rounded-lg text-slate-600 dark:text-slate-200 text-sm mb-4" onChange={handlePassword} required />
                                     <label className="text-sm text-slate-600  dark:text-slate-100 block mb-3 ">Enter user password</label>
                                     <select className="block w-full p-2 border bg-slate-200 dark:border-slate-600  dark:bg-slate-700 border-slate-300 rounded-lg text-slate-600 dark:text-slate-200 text-sm mb-4" onChange={handleRole} required >
+                                        <option key="0" value="0">None</option>
                                         {
                                             roles.map((role) => (<option key={role.roleId} value={role.roleId}>{role.roleName}</option>))
                                         }
@@ -205,8 +206,8 @@ function Users() {
                                                             <div className="flex items-center overflow-hidden">
                                                                 <select
                                                                     className="px-3 py-2 flex-1 appearance-none outline-none bg-transparent border-0  "
-                                                                    onChange={(e) => handleUpdatedRole(e.target.value,)}
-                                                                >
+                                                                    onChange={handleUpdatedRole}
+                                                                ><option key="0" value="0">None</option>
                                                                     {roles.map((role) => (
                                                                         <option key={role.roleId} value={role.roleId}>
                                                                             {role.roleName}

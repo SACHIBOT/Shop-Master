@@ -1,6 +1,7 @@
 interface StockType {
     stockId: Number,
-    quantity: Number
+    quantity: Number,
+    unit: string
 
 }
 

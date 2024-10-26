@@ -16,6 +16,7 @@ function Items() {
     const [itemPrice, setItemPrice] = useState<number>(0)
     const [itemCategoryId, setItemCategoryId] = useState<number>(0)
     const [itemNewQty, setItemNewQty] = useState<number>(0)
+    const [itemUnit, setItemUnit] = useState<string>("")
 
     const [itemToEdit, setItemToEdit] = useState<ItemType>()
     const [itemNameToEdit, setItemNameToEdit] = useState<string>("")
@@ -36,9 +37,7 @@ function Items() {
         navigate("/")
     }
 
-    const handleQuantityChange = (change: number) => {
-        setItemNewQty((prevQuantity) => Math.max(0, prevQuantity + change));
-    };
+
 
     const handleQuantityInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = Math.max(0, Number(e.target.value));
@@ -99,7 +98,8 @@ function Items() {
                 itemName: itemName,
                 description: itemdescription,
                 price: itemPrice,
-                itemCategoryId: itemCategoryId
+                itemCategoryId: itemCategoryId,
+                unit: itemUnit
             }
             const newItem = await axios.post("http://localhost:8080/manager/items", data, config);
             if (itemNewQty > 0 && newItem.data?.itemId) {
@@ -147,7 +147,7 @@ function Items() {
                 itemCategoryId: itemCategoryIdToEdit
             }
             const updatedItem = await axios.put(`http://localhost:8080/manager/items/${itemToEdit?.itemId}`, data, config);
-            if (itemNewQtyToEdit > 0 && updatedItem.data?.itemId) {
+            if (updatedItem.data?.itemId) {
                 const data2 = {
                     itemId: updatedItem.data.itemId,
                     quantity: itemNewQtyToEdit
@@ -155,7 +155,7 @@ function Items() {
                 await axios.put("http://localhost:8080/manager/stocks", data2, config)
             }
             loadItems()
-            clearItemUpdateInfo()
+            handleUpdateItemClose()
             setUpdateError("")
         } catch (error) {
             if (error instanceof AxiosError) {
@@ -171,6 +171,10 @@ function Items() {
     }
     function handleItemDescription(event: any) {
         setItemDescription(event.target.value)
+    }
+
+    function handleUnitInput(event: any) {
+        setItemUnit(event.target.value)
     }
 
     const handleItemNameToEdit = (event: any) => {
@@ -228,7 +232,7 @@ function Items() {
                     {
                         (isManager || isAdmin) &&
                         <div className="flex items-center justify-center p-5 mb-5">
-                            <form className="w-[650px] border border border-slate-200 dark:border-slate-700  px-4 py-3 rounded-lg">
+                            <form className="w-[800px] border border border-slate-200 dark:border-slate-700  px-4 py-3 rounded-lg">
                                 <h2 className="text-xl font-medium mb-4">Add Item</h2>
 
                                 <div className="grid  grid-cols-1 md:grid-cols-2 gap-4">
@@ -240,7 +244,7 @@ function Items() {
                                         <input type="text" className="block w-full p-2 border bg-slate-200 dark:border-slate-600  dark:bg-slate-700 border-slate-300 rounded-lg text-slate-600 dark:text-slate-200 text-sm mb-4" onChange={handleItemDescription} required />
                                     </div>
                                 </div>
-                                <div className="grid  grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="grid  grid-cols-1 md:grid-cols-4 gap-4">
                                     <div>
                                         <label className="text-sm text-slate-600 dark:text-slate-100 block mb-3">Select item category</label>
                                         <select
@@ -248,6 +252,7 @@ function Items() {
                                             onChange={handleCategorySelect}
                                             required
                                         >
+                                            <option key="0" value="0">None</option>
                                             {
                                                 categories.map((category) => (<option key={category.itemCategoryId} value={category.itemCategoryId}>{category.categoryName}</option>))
                                             }
@@ -271,36 +276,22 @@ function Items() {
                                     <div>
                                         <label className="text-sm text-slate-600 dark:text-slate-100 block mb-3">Enter Quantity you add</label>
                                         <input
-                                            type="number"
+                                            type="text"
                                             className="block w-full  p-2 border bg-slate-200 dark:border-slate-600 dark:bg-slate-700 border-slate-300 rounded-lg text-slate-600 dark:text-slate-200 text-sm mb-4"
                                             onChange={handleQuantityInput}
-                                            min="0"
                                             required
                                         />
-                                        {/* <div className="flex items-center">
-                                                <button
-                                                    type="button"
-                                                    className="bg-slate-200 border-y   dark:border-slate-600 dark:bg-slate-700 border-slate-300  text-slate-600 dark:text-slate-200 rounded-l-lg px-3 h-9"
-                                                    onClick={() => handleQuantityChange(-1)}
-                                                >
-                                                    -
-                                                </button>
-                                                <input
-                                                    type="number"
-                                                    className="block w-16 h-9 px-3 bg-slate-200 border   dark:border-slate-600 dark:bg-slate-700 border-slate-300 text-center text-slate-600 dark:text-slate-200 text-sm"
-                                                    value={itemNewQty}
-                                                    onChange={handleQuantityInput}
-                                                    min="0"
-                                                    required
-                                                />
-                                                <button
-                                                    type="button"
-                                                    className="bg-slate-200 border-y   dark:border-slate-600 dark:bg-slate-700 border-slate-300  text-slate-600 dark:text-slate-200  rounded-r-lg px-3 h-9"
-                                                    onClick={() => handleQuantityChange(1)}
-                                                >
-                                                    +
-                                                </button>
-                                            </div> */}
+
+                                    </div>
+                                    <div>
+                                        <label className="text-sm text-slate-600 dark:text-slate-100 block mb-3">Enter units of measure</label>
+                                        <input
+                                            type="number"
+                                            className="block w-full  p-2 border bg-slate-200 dark:border-slate-600 dark:bg-slate-700 border-slate-300 rounded-lg text-slate-600 dark:text-slate-200 text-sm mb-4"
+                                            onChange={handleUnitInput}
+                                            required
+                                        />
+
                                     </div>
                                 </div>
 
@@ -321,6 +312,7 @@ function Items() {
                             <table className="table-auto w-full  rounded-lg ">
                                 <thead>
                                     <tr className="text-sm font-medium   border-b border-sky-900 dark:border-sky-100  text-sky-900 dark:text-slate-50">
+                                        <th className="p-2 border-r border-sky-900  dark:border-sky-100 text-center">ItemCode</th>
                                         <th className="p-2 border-r border-sky-900  dark:border-sky-100 text-center">Item</th>
                                         <th className="p-2 border-r border-sky-900  dark:border-sky-100 text-center">Description</th>
                                         <th className="p-2 border-r border-sky-900  dark:border-sky-100 text-center">Category</th>
@@ -333,11 +325,15 @@ function Items() {
                                 <tbody>
                                     {items.map((item, index) => (
                                         <tr key={index} className={` ${index !== items.length - 1 ? ' border-b border-sky-900  dark:border-sky-100 ' : ''}`}>
+                                            <td className="p-2 text-slate-700 dark:text-slate-100 border-r border-sky-900  dark:border-sky-100  text-center">{item.itemId}</td>
                                             <td className="p-2 text-slate-700 dark:text-slate-100 border-r border-sky-900  dark:border-sky-100  text-center">{item.itemName}</td>
                                             <td className="p-2 text-slate-700  dark:text-slate-100 border-r border-sky-900  dark:border-sky-100 text-center">{item.description}</td>
                                             <td className="p-2 text-slate-700   dark:text-slate-100 border-r border-sky-900  dark:border-sky-100 text-center">{item.itemCategory.categoryName}</td>
                                             <td className="p-2 text-slate-700  dark:text-slate-100  border-r border-sky-900  dark:border-sky-100 text-center">{item.price}</td>
-                                            <td className="p-2 text-slate-700  dark:text-slate-100  border-r border-sky-900 dark:border-sky-100  text-center">{`${item.stock.quantity}`}</td>
+                                            <td className="p-2 text-slate-700 relative dark:text-slate-100  border-r border-sky-900 dark:border-sky-100  text-center">
+                                                <div>{`${item.stock.quantity} `}
+                                                    <span className="absolute inset-y-0 pr-3 right-0 flex items-center  text-slate-600 dark:text-slate-200">{item.stock && item.stock.unit ? item.stock.unit : ''}</span>
+                                                </div></td>
                                             {(isManager || isAdmin) && <td className="p-2 text-slate-700  dark:text-slate-100 text-center">
                                                 <button type="button" className="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900"
                                                     onClick={() => handleItemToEdit(item)}
@@ -360,7 +356,7 @@ function Items() {
                     </div>
 
                     {
-                        itemToEdit && (isManager || isAdmin) && (
+                        itemToEdit && itemToEdit !== undefined && (isManager || isAdmin) && (
                             <div ref={updateFormRef} className="flex items-center justify-center p-5 mb-5">
                                 <form className="w-[650px] border border-slate-200 dark:border-slate-600 px-4 py-3 rounded-lg relative">
                                     <button type="button" className="absolute top-2 right-2 p-1 text-slate-600 hover:text-red-600" onClick={handleUpdateItemClose}>
@@ -388,6 +384,7 @@ function Items() {
                                                 onChange={handleItemCategoryToEdit}
                                                 required
                                             >
+                                                <option key="0" value="0">None</option>
                                                 {
                                                     categories.map((category) => (<option key={category.itemCategoryId} value={category.itemCategoryId}>{category.categoryName}</option>))
                                                 }
@@ -410,39 +407,16 @@ function Items() {
                                         </div>
 
                                         <div>
-                                            <label className="text-sm text-slate-600 dark:text-slate-100 block mb-3">Enter quantity you add now</label>
-                                            <input
-                                                type="number"
-                                                className="block w-full  p-2 border bg-slate-200 dark:border-slate-600 dark:bg-slate-700 border-slate-300 rounded-lg text-slate-600 dark:text-slate-200 text-sm mb-4"
-                                                value={itemNewQtyToEdit}
-                                                onChange={handleItemQuantityToEdit}
-                                                min="0"
-                                                required
-                                            />
-                                            {/* <div className="flex items-center">
-                                                <button
-                                                    type="button"
-                                                    className="bg-slate-200 border-y   dark:border-slate-600 dark:bg-slate-700 border-slate-300  text-slate-600 dark:text-slate-200 rounded-l-lg px-3 h-9"
-                                                    onClick={() => handleQuantityChange(-1)}
-                                                >
-                                                    -
-                                                </button>
+                                            <label className="text-sm  text-slate-600 dark:text-slate-100 block mb-3">Quantity you add/remove</label>
+                                            <div className="relative"><span className="absolute inset-y-0 pr-7 right-0 flex items-center  text-slate-600 dark:text-slate-200">{itemToEdit.stock && itemToEdit.stock.unit ? itemToEdit.stock.unit : ''}</span>
                                                 <input
                                                     type="number"
-                                                    className="block w-16 h-9 px-3 bg-slate-200 border   dark:border-slate-600 dark:bg-slate-700 border-slate-300 text-center text-slate-600 dark:text-slate-200 text-sm"
-                                                    value={itemNewQty}
-                                                    onChange={handleQuantityInput}
-                                                    min="0"
+                                                    className="block w-full  p-2 border bg-slate-200 dark:border-slate-600 dark:bg-slate-700 border-slate-300 rounded-lg text-slate-600 dark:text-slate-200 text-sm mb-4"
+                                                    value={itemNewQtyToEdit}
+                                                    onChange={handleItemQuantityToEdit}
                                                     required
-                                                />
-                                                <button
-                                                    type="button"
-                                                    className="bg-slate-200 border-y   dark:border-slate-600 dark:bg-slate-700 border-slate-300  text-slate-600 dark:text-slate-200  rounded-r-lg px-3 h-9"
-                                                    onClick={() => handleQuantityChange(1)}
-                                                >
-                                                    +
-                                                </button>
-                                            </div>*/}
+                                                /></div>
+
                                         </div>
                                     </div>
 

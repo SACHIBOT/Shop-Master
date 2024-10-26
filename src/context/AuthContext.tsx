@@ -11,7 +11,8 @@ export const AuthContxt = createContext<AuthContxtType>({
     logout: () => { },
     isAdmin: false,
     isManager: false,
-    isCashier: false
+    isCashier: false,
+    username: ""
 })
 
 export function AuthProvider({ children }: AuthProviderPropsType) {
@@ -21,6 +22,7 @@ export function AuthProvider({ children }: AuthProviderPropsType) {
     const [isAdmin, setIsAdmin] = useState<boolean>(false)
     const [isManager, setIsManager] = useState<boolean>(false)
     const [isCashier, setIsCashier] = useState<boolean>(false)
+    const [username, setUsername] = useState<string>("")
 
 
 
@@ -38,7 +40,7 @@ export function AuthProvider({ children }: AuthProviderPropsType) {
             setIsAdmin(roleName && roleName.toUpperCase() === "ADMIN")
             setIsManager(roleName && roleName.toUpperCase() === "MANAGER")
             setIsCashier(roleName && roleName.toUpperCase() === "CASHIER")
-
+            setUsername(response.data.username)
             setIsAuthenticated(true)
             setJwtToken(token)
             setLoading(false)
@@ -68,7 +70,7 @@ export function AuthProvider({ children }: AuthProviderPropsType) {
     }, [])
 
     return (
-        <AuthContxt.Provider value={{ isAuthenticated, jwtToken, loading, login, logout, isAdmin, isManager, isCashier }}>
+        <AuthContxt.Provider value={{ isAuthenticated, jwtToken, loading, login, logout, isAdmin, isManager, isCashier, username }}>
             {children}
         </AuthContxt.Provider>
     )
