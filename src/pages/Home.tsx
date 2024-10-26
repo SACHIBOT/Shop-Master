@@ -4,12 +4,11 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import ItemType from "../types/ItemType";
 import axios, { AxiosError } from "axios";
-import { saleCreation, SaleItemsType, SaleItemType } from "../types/SaleType";
+import { saleCreation, SaleItemType } from "../types/SaleType";
 import Bill from "../components/Bill";
 
 
 export default function Home() {
-    const [error, setError] = useState<string>("")
     const [itemIderror, setItemIderror] = useState<string>("")
     const [itemActionError, setItemActionError] = useState<string>("")
 
@@ -32,7 +31,7 @@ export default function Home() {
     };
 
     const navigate = useNavigate();
-    const { isAuthenticated, jwtToken, isAdmin, isManager, username } = useAuth();
+    const { isAuthenticated, jwtToken, username } = useAuth();
     if (!isAuthenticated) {
         navigate("/")
     }
@@ -49,7 +48,6 @@ export default function Home() {
         setItemId(0)
         setQuantity(0)
         setItem(undefined)
-        setError("")
         setSaleId(0)
         setTotal(0)
         setCash(0)
